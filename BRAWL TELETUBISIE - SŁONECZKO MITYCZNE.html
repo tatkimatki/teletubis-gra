@@ -1,0 +1,854 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BRAWL TELETUBISIE - SŁONECZKO MITYCZNE</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent}
+  body{background:#87CEEB;height:100vh;overflow:hidden;touch-action:none}
+  .bg{position:fixed;inset:0;background:linear-gradient(#2aa5ff 0%,#87CEEB 55%,#7ed957 55%,#4caf50 100%)}
+  .sun{position:absolute;top:15px;right:15px;width:80px;height:80px;background:#ffeb3b;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;box-shadow:0 0 20px #ffeb3b}
+  .top-bar{position:relative;z-index:2;display:flex;justify-content:space-between;padding:10px;gap:6px}
+  .coins,.gems,.boxes{background:rgba(0,0,0,.6);padding:8px 10px;border-radius:20px;font-weight:bold;color:white;font-size:14px}
+  .boxes{background:#8e24aa}
+  .title{text-align:center;position:relative;z-index:2;color:#ffcc00;font-size:44px;font-weight:900;-webkit-text-stroke:2px #0d47a1;line-height:.9}
+  .characters{position:relative;z-index:2;display:flex;justify-content:center;gap:6px;margin-top:16px;flex-wrap:wrap}
+  .char{width:60px;height:100px;border-radius:40px 40px 20px 20px;display:flex;flex-direction:column;align-items:center;padding-top:8px;position:relative}
+  .char.locked{filter:grayscale(1);opacity:.55}
+  .char .lock{position:absolute;top:28px;font-size:26px}
+  .char .face{font-size:26px;margin-top:8px}
+  .char .name{font-size:8px;font-weight:bold;color:white;background:rgba(0,0,0,.3);padding:2px 5px;border-radius:10px;text-align:center}
+  .char.mythic{border:3px solid #ff00ff;box-shadow:0 0 12px #ff00ff}
+  .char.mythic-sun{border:3px solid #ffeb3b;box-shadow:0 0 14px #ffeb3b}
+  .lvl-badge{position:absolute;bottom:4px;background:#ffcc00;color:black;font-size:9px;font-weight:900;padding:2px 5px;border-radius:8px}
+  .tinki{background:#a855f7}.dipsi{background:#22c55e}.lala{background:#eab308}.pou{background:#ef4444}.odkurzacz{background:linear-gradient(135deg,#ff00ff,#00e5ff)}.sloneczko{background:linear-gradient(135deg,#ffeb3b,#ff9800)}
+  .bottom{position:fixed;bottom:0;left:0;right:0;z-index:3;background:#1a1a2e;padding:10px 8px 16px;display:flex;gap:5px}
+  .btn{flex:1;border:none;border-radius:12px;padding:14px 0;font-size:14px;font-weight:900;color:white;cursor:pointer}
+  .btn-graj{background:#4caf50}.btn-postacie{background:#2196f3}.btn-boks{background:#8e24aa}.btn-up{background:#ff9800}.btn-skin{background:#e91e63}
+  .screen{display:none;position:fixed;inset:0;z-index:10;background:#1a1a2e;color:white;padding:18px;overflow-y:auto}
+  .screen.active{display:block}
+  .back{background:#ff5722;border:none;color:white;padding:10px 18px;border-radius:10px;font-weight:bold;cursor:pointer;margin-bottom:12px}
+  .up-char-btn{border:3px solid transparent;background:#ff5722;color:white;padding:10px 14px;border-radius:10px;font-weight:bold;cursor:pointer}
+  .up-char-btn.active{border-color:#ffcc00;background:#ff9800;transform:scale(1.05)}
+  .up-char-btn.locked{opacity:.5;filter:grayscale(1)}
+  .card{background:#2d2d44;padding:14px;border-radius:14px;margin-bottom:10px;display:flex;gap:12px;align-items:center;cursor:pointer;border:3px solid transparent;position:relative}
+  .card.selected{border-color:#ffcc00}
+  .card.locked{opacity:.6;filter:grayscale(.6)}
+  .card.mythic{border-color:#ff00ff;background:linear-gradient(135deg,#3d1a4d,#1a2a4d)}
+  .card.mythic-sun{border-color:#ffeb3b;background:linear-gradient(135deg,#4d3a00,#4d2a00)}
+  .card-emoji{font-size:44px}
+  .lock-badge{position:absolute;top:8px;right:10px;background:#333;padding:4px 10px;border-radius:10px;font-size:12px;font-weight:bold}
+  .mythic-badge{position:absolute;top:8px;right:10px;background:#ff00ff;padding:4px 10px;border-radius:10px;font-size:11px;font-weight:900}
+  .mythic-sun-badge{position:absolute;top:8px;right:10px;background:#ffeb3b;color:black;padding:4px 10px;border-radius:10px;font-size:11px;font-weight:900}
+  .select-btn{background:#4caf50;border:none;color:white;padding:15px;border-radius:14px;font-size:20px;font-weight:900;width:100%;cursor:pointer}
+  .boss-btn{background:linear-gradient(90deg,#ff0000,#8b0000);border:none;color:white;padding:16px;border-radius:14px;font-size:19px;font-weight:900;width:100%;cursor:pointer;margin-top:10px;box-shadow:0 0 15px red}
+  .up-btn{background:#ff9800;border:none;color:white;padding:14px;border-radius:12px;font-weight:900;font-size:16px;cursor:pointer;width:100%;margin-top:8px}
+  .up-btn:disabled{background:#555;color:#aaa}
+  .hyper-btn{background:linear-gradient(90deg,#ff00ff,#ffcc00);border:none;color:white;padding:16px;border-radius:14px;font-weight:900;font-size:18px;cursor:pointer;width:100%;margin-top:10px;box-shadow:0 0 15px #ff00ff}
+  .hyper-btn:disabled{background:#555;color:#aaa;box-shadow:none}
+  .skin-card{background:#2d2d44;padding:14px;border-radius:14px;margin-bottom:10px;display:flex;gap:12px;align-items:center;border:3px solid transparent}
+  .skin-card.equipped{border-color:#e91e63;background:#4a1a2e}
+  .skin-card.locked{opacity:.55;filter:grayscale(.7)}
+  .skin-btn{background:#e91e63;border:none;color:white;padding:10px 16px;border-radius:10px;font-weight:900;cursor:pointer}
+  .skin-btn:disabled{background:#555;color:#aaa}
+  .mode-card{background:#2d2d44;padding:16px;border-radius:16px;margin-bottom:12px;cursor:pointer;border:3px solid transparent;text-align:center}
+  .mode-card.selected{border-color:#ffcc00}
+  .mode-card.boss-mode{background:linear-gradient(135deg,#4a0000,#1a0000);border-color:#ff0000}
+  #gameScreen{padding:0;background:#4caf50;overflow:hidden}
+  #gameCanvas{display:block;width:100%;height:100%}
+  .hud{position:absolute;top:8px;left:8px;right:8px;display:flex;justify-content:space-between;z-index:20;pointer-events:none;gap:6px}
+  .hud-box{background:rgba(0,0,0,.65);color:white;padding:7px 10px;border-radius:10px;font-weight:bold;font-size:12px}
+  .hp-bar{width:110px;height:12px;background:#333;border-radius:10px;overflow:hidden;margin-top:3px}
+  #hpFill{height:100%;background:#ff2222;width:100%}
+  .super-bar{width:110px;height:10px;background:#333;border-radius:10px;overflow:hidden;margin-top:3px}
+  #superFill{height:100%;background:#ffcc00;width:0%}
+  .hyper-bar{width:110px;height:10px;background:#333;border-radius:10px;overflow:hidden;margin-top:3px}
+  #hyperFill{height:100%;background:linear-gradient(90deg,#ff00ff,#ffcc00);width:0%}
+  .regen-bar{width:110px;height:8px;background:#333;border-radius:10px;overflow:hidden;margin-top:3px}
+  #regenFill{height:100%;background:#4caf50;width:100%}
+  .boss-hp{position:absolute;top:62px;left:50%;transform:translateX(-50%);width:85%;z-index:20;pointer-events:none;background:rgba(0,0,0,.6);padding:6px;border-radius:10px;max-height:120px;overflow:hidden}
+  .boss-hp-row{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+  .boss-hp-bar{flex:1;height:10px;background:#333;border-radius:10px;overflow:hidden}
+  .boss-hp-fill{height:100%;background:linear-gradient(90deg,#ff0000,#ff6600);width:100%}
+  .controls{position:absolute;bottom:16px;left:0;right:0;display:flex;justify-content:space-between;padding:0 16px;z-index:20}
+  .joystick{width:100px;height:100px;background:rgba(255,255,255,.3);border:2px solid white;border-radius:50%;position:relative}
+  .stick{width:46px;height:46px;background:white;border-radius:50%;position:absolute;top:27px;left:27px}
+  .attack-btn{width:90px;height:90px;background:#ff5722;border:3px solid white;border-radius:50%;color:white;font-size:32px;display:flex;align-items:center;justify-content:center}
+  .super-btn{width:70px;height:70px;background:#777;border:3px solid white;border-radius:50%;color:white;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:11px;text-align:center}
+  .super-btn.ready{background:#ffcc00;color:black;box-shadow:0 0 15px #ffcc00}
+  .hyper-game-btn{width:70px;height:70px;background:#333;border:3px solid #ff00ff;border-radius:50%;color:white;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:10px;text-align:center}
+  .hyper-game-btn.ready{background:linear-gradient(135deg,#ff00ff,#ffcc00);box-shadow:0 0 18px #ff00ff}
+  #gameOver{position:absolute;inset:0;background:rgba(0,0,0,.9);color:white;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:30;text-align:center;padding:20px}
+  #rewardBox{background:#ffcc00;color:black;padding:16px;border-radius:18px;margin:14px 0;font-size:18px;font-weight:900;line-height:1.6}
+  #hitText{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);color:white;font-weight:900;font-size:24px;text-shadow:2px 2px 0 black;display:none;z-index:40;pointer-events:none;text-align:center}
+  #regenText{position:absolute;top:62px;left:10px;background:rgba(76,175,80,.9);color:white;padding:5px 10px;border-radius:10px;font-weight:bold;font-size:12px;display:none;z-index:21}
+  .boks-item{background:#3d2b4d;padding:16px;border-radius:16px;margin-bottom:12px;text-align:center;border:2px solid #ffcc00}
+  .open-btn{background:#ffcc00;border:none;padding:14px 28px;border-radius:12px;font-weight:900;font-size:18px;cursor:pointer;margin-top:10px}
+  .open-btn:disabled{background:#555;color:#aaa}
+  .open10-btn{background:#ff00ff;border:none;padding:14px 28px;border-radius:12px;font-weight:900;font-size:18px;cursor:pointer;margin-top:10px;color:white}
+  .open10-btn:disabled{background:#555;color:#aaa}
+  #unlockPopup{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:100;color:white;text-align:center;padding:20px}
+  #unlockPopup.mythic{background:linear-gradient(135deg,rgba(255,0,255,.9),rgba(0,229,255,.9))}
+  #unlockPopup.mythic-sun{background:linear-gradient(135deg,#ffeb3b,#ff9800);color:black}
+  #unlockPopup.skin{background:linear-gradient(135deg,#e91e63,#ff9800)}
+  .pity-bar{width:100%;height:14px;background:#333;border-radius:10px;overflow:hidden;margin-top:6px}
+  #pityFill{height:100%;background:linear-gradient(90deg,#ff00ff,#00e5ff);width:0%}
+  #pitySunFill{height:100%;background:linear-gradient(90deg,#ffeb3b,#ff9800);width:0%}
+  .lvl-dots{font-size:18px;letter-spacing:2px}
+</style>
+</head>
+<body>
+
+<div class="bg"><div class="sun">☀️</div></div>
+<div class="top-bar">
+  <div class="coins">🪙 <span id="coins">0</span></div>
+  <div class="gems">💎 <span id="gems">0</span></div>
+  <div class="boxes">📦 <span id="boxes">0</span></div>
+</div>
+<h1 class="title">BRAWL<br>TELETUBISIE</h1>
+<div class="characters">
+  <div class="char tinki" id="home-tinki"><div class="face" id="home-face-tinki">🟣</div><div class="name">TINKI</div><div class="lvl-badge" id="home-lvl-tinki">LVL 0</div></div>
+  <div class="char dipsi locked" id="home-dipsi"><div class="lock">🔒</div><div class="face" id="home-face-dipsi">🟢</div><div class="name">DIPSI 🔒</div></div>
+  <div class="char lala locked" id="home-lala"><div class="lock">🔒</div><div class="face" id="home-face-lala">🟡</div><div class="name">LA LA 🔒</div></div>
+  <div class="char pou locked" id="home-pou"><div class="lock">🔒</div><div class="face" id="home-face-pou">🔴</div><div class="name">POU 🔒</div></div>
+  <div class="char odkurzacz locked mythic" id="home-odkurzacz"><div class="lock">🔒</div><div class="face" id="home-face-odkurzacz">🌪️</div><div class="name">ODKURZACZ<br>✨MITYCZNY</div></div>
+  <div class="char sloneczko locked mythic-sun" id="home-sloneczko"><div class="lock">🔒</div><div class="face" id="home-face-sloneczko">☀️</div><div class="name">SŁONECZKO<br>☀️MITYCZNE</div></div>
+</div>
+<div class="bottom">
+  <button class="btn btn-graj" onclick="showScreen('wybor')">▶ GRAJ</button>
+  <button class="btn btn-up" onclick="showScreen('ulepsz')">⬆️ ULEPSZ</button>
+  <button class="btn btn-skin" onclick="showScreen('skiny')">👗 SKINY</button>
+  <button class="btn btn-boks" onclick="showScreen('boksy')">📦 BOKSY</button>
+</div>
+
+<div id="unlockPopup">
+  <div style="font-size:80px" id="unlockEmoji">🎉</div>
+  <h2 style="font-size:32px;margin:10px 0" id="unlockTitle">NOWA POSTAĆ!</h2>
+  <p id="unlockText" style="font-size:18px"></p><br>
+  <button class="select-btn" style="width:auto;padding:14px 30px" onclick="closeUnlock()">🎮 GRAJ NIĄ!</button>
+</div>
+
+<div id="skiny" class="screen">
+  <button class="back" onclick="showScreen('home')">← WRÓĆ</button>
+  <h2>👗 Przebrania</h2>
+  <p style="opacity:.8;margin:8px 0">Zdobyte: <b id="skinCount">0 / 12</b></p>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0">
+    <button class="up-char-btn" id="skinbtn-tinki" onclick="selectSkinChar('tinki')">🟣 Tinki</button>
+    <button class="up-char-btn" id="skinbtn-dipsi" onclick="selectSkinChar('dipsi')">🟢 Dipsi</button>
+    <button class="up-char-btn" id="skinbtn-lala" onclick="selectSkinChar('lala')">🟡 La La</button>
+    <button class="up-char-btn" id="skinbtn-pou" onclick="selectSkinChar('pou')">🔴 Pou</button>
+    <button class="up-char-btn" id="skinbtn-odkurzacz" style="background:#ff00ff" onclick="selectSkinChar('odkurzacz')">🌪️ Odkurzacz</button>
+    <button class="up-char-btn" id="skinbtn-sloneczko" style="background:#ffeb3b;color:black" onclick="selectSkinChar('sloneczko')">☀️ Słoneczko</button>
+  </div>
+  <div id="skinList"></div>
+</div>
+
+<div id="ulepsz" class="screen">
+  <button class="back" onclick="showScreen('home')">← WRÓĆ</button>
+  <h2>⬆️ Ulepszanie</h2>
+  <p>Masz: 🪙 <b id="upCoins">0</b></p>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0">
+    <button class="up-char-btn" id="upbtn-tinki" onclick="selectUpChar('tinki')">🟣 Tinki</button>
+    <button class="up-char-btn" id="upbtn-dipsi" onclick="selectUpChar('dipsi')">🟢 Dipsi</button>
+    <button class="up-char-btn" id="upbtn-lala" onclick="selectUpChar('lala')">🟡 La La</button>
+    <button class="up-char-btn" id="upbtn-pou" onclick="selectUpChar('pou')">🔴 Pou</button>
+    <button class="up-char-btn" id="upbtn-odkurzacz" style="background:#ff00ff" onclick="selectUpChar('odkurzacz')">🌪️ Odkurzacz</button>
+    <button class="up-char-btn" id="upbtn-sloneczko" style="background:#ffeb3b;color:black" onclick="selectUpChar('sloneczko')">☀️ Słoneczko</button>
+  </div>
+  <div id="upPanel" style="background:#2d2d44;padding:16px;border-radius:16px">
+    <div style="font-size:50px;text-align:center" id="upEmoji">🟣</div>
+    <h3 style="text-align:center" id="upName">TINKI WINKI</h3>
+    <p style="text-align:center" class="lvl-dots" id="upDots">☆☆☆☆☆☆☆☆☆☆</p>
+    <p style="text-align:center">Poziom: <b id="upLvl">0 / 10</b></p>
+    <p style="text-align:center">❤️ HP: <b id="upHp">6000</b> | 🥊 Atak: <b id="upDmg">350</b></p>
+    <p style="text-align:center" id="upNext">Następne: HP 6600 | Atak 385</p>
+    <button class="up-btn" id="upBtn" onclick="upgradeChar()">⬆️ ULEPSZ</button>
+    <div id="hyperPanel" style="display:none;margin-top:14px;border-top:2px dashed #ff00ff;padding-top:12px">
+      <h3 style="text-align:center;color:#ff00ff">🔥 HIPERKA! 🔥</h3>
+      <button class="hyper-btn" id="hyperBtn" onclick="buyHyper()">🔥 KUPIĘ HIPERKĘ ZA 5000 🪙</button>
+      <p style="text-align:center;margin-top:8px" id="hyperStatus"></p>
+    </div>
+  </div>
+</div>
+
+<div id="wybor" class="screen">
+  <button class="back" onclick="showScreen('home')">← WRÓĆ</button>
+  <h2>👤 Wybierz postać:</h2>
+  <p>Odblokowane: <span id="unlockedList">Tinki</span></p>
+  <div class="card selected" id="card-tinki" onclick="selectChar('tinki')"><div class="card-emoji" id="card-emoji-tinki">🟣</div><div><b>TINKI WINKI</b> ✅ <span id="card-lvl-tinki"></span><br>❤️ HP: <span id="card-hp-tinki">6000</span> | 🥊 Atak <span id="card-dmg-tinki">350</span><br><span id="card-skin-tinki" style="color:#e91e63;font-size:12px"></span></div></div>
+  <div class="card locked" id="card-dipsi" onclick="selectChar('dipsi')"><div class="card-emoji" id="card-emoji-dipsi">🟢</div><div><b>DIPSI</b> <span id="card-lvl-dipsi"></span><br>❤️ HP: <span id="card-hp-dipsi">3400</span> | 🥊 Atak <span id="card-dmg-dipsi">300</span><br><span id="card-skin-dipsi" style="color:#e91e63;font-size:12px"></span></div><div class="lock-badge">🔒</div></div>
+  <div class="card locked" id="card-lala" onclick="selectChar('lala')"><div class="card-emoji" id="card-emoji-lala">🟡</div><div><b>LA LA</b> <span id="card-lvl-lala"></span><br>HP <span id="card-hp-lala">3000</span> | Atak <span id="card-dmg-lala">550</span><br><span id="card-skin-lala" style="color:#e91e63;font-size:12px"></span></div><div class="lock-badge">🔒</div></div>
+  <div class="card locked" id="card-pou" onclick="selectChar('pou')"><div class="card-emoji" id="card-emoji-pou">🔴</div><div><b>POU</b> <span id="card-lvl-pou"></span><br>❤️ HP: <span id="card-hp-pou">3800</span> | 🥊 Atak <span id="card-dmg-pou">650</span><br><span id="card-skin-pou" style="color:#e91e63;font-size:12px"></span></div><div class="lock-badge">🔒</div></div>
+  <div class="card locked mythic" id="card-odkurzacz" onclick="selectChar('odkurzacz')"><div class="card-emoji" id="card-emoji-odkurzacz">🌪️</div><div><b>ODKURZACZ ✨ MITYCZNY</b> <span id="card-lvl-odkurzacz"></span><br>❤️ HP: <span id="card-hp-odkurzacz">3200</span> | 🎯 Atak <span id="card-dmg-odkurzacz">500</span> + PLAMA<br><span id="card-skin-odkurzacz" style="color:#e91e63;font-size:12px"></span></div><div class="mythic-badge">✨ MITYCZNY</div></div>
+  <div class="card locked mythic-sun" id="card-sloneczko" onclick="selectChar('sloneczko')"><div class="card-emoji" id="card-emoji-sloneczko">☀️</div><div><b>SŁONECZKO ☀️ MITYCZNE</b> <span id="card-lvl-sloneczko"></span><br>❤️ HP: <span id="card-hp-sloneczko">3500</span> | ☀️ Atak <span id="card-dmg-sloneczko">600</span> + PROMIEŃ<br><span id="card-skin-sloneczko" style="color:#e91e63;font-size:12px"></span></div><div class="mythic-sun-badge">☀️ MITYCZNE</div></div>
+
+  <h2 style="margin-top:14px">🎮 Wybierz tryb:</h2>
+  <div class="mode-card selected" id="mode-normal" onclick="selectMode('normal')"><div style="font-size:36px">🍞</div><b>NORMALNY</b><br><span style="opacity:.8;font-size:13px">Zbierz 8 tostów • 60s</span></div>
+  <div class="mode-card boss-mode" id="mode-boss" onclick="selectMode('boss')"><div style="font-size:28px">👹👹👹👹👹<br>👹👹👹👹👹<br>👹👹👹👹👹<br>👹👹👹👹👹</div><b>TRYB 20 BOSSÓW! 👹</b><br><span style="font-size:13px">20 BOSSÓW po 10 000 HP! Atak 200! 300s!</span></div>
+  <button class="select-btn" id="playBtn" onclick="startGame()">▶ GRAJ JAKO <span id="selectedName">TINKI</span>!</button>
+  <button class="boss-btn" id="playBossBtn" style="display:none" onclick="startGame()">👹 WALCZ Z 20 BOSSAMI JAKO <span id="selectedNameBoss">TINKI</span>!</button>
+  <button class="select-btn" style="background:#ff9800;margin-top:10px" onclick="showScreen('ulepsz')">⬆️ ULEPSZ TĘ POSTAĆ</button>
+  <button class="select-btn" style="background:#e91e63;margin-top:10px" onclick="showScreen('skiny')">👗 ZMIEŃ PRZEBRANIE</button>
+</div>
+
+<div id="postacie" class="screen">
+  <button class="back" onclick="showScreen('home')">← WRÓĆ</button>
+  <h2>Postacie:</h2><br>
+  <div class="card" onclick="selectChar('tinki');showScreen('wybor')"><div class="card-emoji">🟣</div><div><b>TINKI</b> ✅</div></div>
+  <div class="card locked" id="post-dipsi" onclick="selectChar('dipsi');showScreen('wybor')"><div class="card-emoji">🟢</div><div><b>DIPSI</b> 🔒</div></div>
+  <div class="card locked" id="post-lala" onclick="selectChar('lala');showScreen('wybor')"><div class="card-emoji">🟡</div><div><b>LA LA</b> 🔒</div></div>
+  <div class="card locked" id="post-pou" onclick="selectChar('pou');showScreen('wybor')"><div class="card-emoji">🔴</div><div><b>POU</b> 🔒</div></div>
+  <div class="card locked mythic" id="post-odkurzacz" onclick="selectChar('odkurzacz');showScreen('wybor')"><div class="card-emoji">🌪️</div><div><b>ODKURZACZ</b> ✨ MITYCZNY</div></div>
+  <div class="card locked mythic-sun" id="post-sloneczko" onclick="selectChar('sloneczko');showScreen('wybor')"><div class="card-emoji">☀️</div><div><b>SŁONECZKO</b> ☀️ MITYCZNE</div></div>
+</div>
+
+<div id="boksy" class="screen">
+  <button class="back" onclick="showScreen('home')">← WRÓĆ</button>
+  <h2>📦 Boksy Tubby Kremu</h2>
+  <p>Masz: 📦 <b id="boksCount">0</b> | 🪙 <b id="boksCoins">0</b> | 💎 <b id="boksGems">0</b> | 👗 Skiny: <b id="boksSkins">0 / 12</b></p>
+  <div id="pityBox" style="background:linear-gradient(90deg,#ff00ff33,#00e5ff33);padding:12px;border-radius:12px;margin-bottom:12px;border:2px solid #ff00ff"><b>✨ LITOŚĆ - ODKURZACZ:</b> <b id="pityCount">0</b> / 25<div class="pity-bar"><div id="pityFill"></div></div><span id="pityText" style="font-size:12px"></span></div>
+  <div id="pityDoneBox" style="display:none;background:#1e7a2e;padding:12px;border-radius:12px;margin-bottom:12px;text-align:center">🌪️ <b>Masz już Odkurzacza! 🎉</b></div>
+  <div id="pitySunBox" style="background:linear-gradient(90deg,#ffeb3b33,#ff980033);padding:12px;border-radius:12px;margin-bottom:12px;border:2px solid #ffeb3b"><b>☀️ LITOŚĆ - SŁONECZKO:</b> <b id="pitySunCount">0</b> / 30<div class="pity-bar"><div id="pitySunFill"></div></div><span id="pitySunText" style="font-size:12px"></span></div>
+  <div id="pitySunDoneBox" style="display:none;background:#ff9800;padding:12px;border-radius:12px;margin-bottom:12px;text-align:center;color:black">☀️ <b>Masz już Słoneczko! 🎉</b></div>
+  <div style="background:#3d2b4d;padding:12px;border-radius:12px;margin-bottom:12px"><b>🎲 Szanse:</b> 🌪️ 4% Odkurzacz | ☀️ 4% Słoneczko | 👗 18% Skin | ⭐ 14% Postać | 🪙 35% Monety | 💎 15% Klejnoty | 🎉 10% Jackpot</div>
+  <div class="boks-item"><div style="font-size:60px">📦</div><button class="open-btn" id="openBtn" onclick="openBox()">📦 OTWÓRZ 1 BOKS</button><br><button class="open10-btn" id="open10Btn" onclick="open10Boxes()">📦📦 OTWÓRZ 10 NA RAZ!</button></div>
+  <div id="boxResult" style="background:#2d2d44;padding:16px;border-radius:14px;display:none;text-align:center;font-size:18px;font-weight:bold"></div>
+  <p>🏆 Wygranych: <b id="totalWins">0</b> | 📦 Otwartych: <b id="totalOpened">0</b> | 👤 Odblokowane: <b id="totalUnlocked">1 / 6</b></p>
+</div>
+
+<div id="gameScreen" class="screen">
+  <canvas id="gameCanvas"></canvas>
+  <div id="regenText">💚 LECZENIE</div>
+  <div class="boss-hp" id="bossHpBox" style="display:none"><div style="color:white;font-weight:900;font-size:12px">👹 BOSSY: <span id="bossLeft">20</span> / 20 | FALA <span id="bossWave">1</span> / 4 | HP: <span id="bossTotalHp">200000</span></div><div id="bossList"></div></div>
+  <div class="hud">
+    <div class="hud-box"><span id="hudMode">NORMALNY</span> - <span id="hudName">TINKI</span> <span id="hudLvl"></span> <span id="hudSkin"></span><div class="hp-bar"><div id="hpFill"></div></div><span id="hpText"></span><br>💚 Regen:<div class="regen-bar"><div id="regenFill"></div></div><span id="regenTimer">6s</span><br>SUPER:<div class="super-bar"><div id="superFill"></div></div><span id="superPct">0%</span><br><span id="hyperHud" style="display:none">🔥 HIPER:<div class="hyper-bar"><div id="hyperFill"></div></div><span id="hyperPct">0%</span></span></div>
+    <div class="hud-box"><span id="hudGoal">🍞 <span id="toastCount">0</span>/8</span><br>🪙 <span id="gameCoins">0</span> • Kills: <span id="killCount">0</span><br>⏱️ <span id="timeLeft">60</span>s</div>
+    <button class="back" style="margin:0;pointer-events:auto" onclick="quitGame()">✖</button>
+  </div>
+  <div class="controls">
+    <div class="joystick" id="joy"><div class="stick" id="stick"></div></div>
+    <div style="display:flex;gap:8px;align-items:flex-end">
+      <div class="hyper-game-btn" id="hyperGameBtn" style="display:none">HIPER<br>🔥</div>
+      <div class="super-btn" id="superBtn">SUPER<br>💥</div>
+      <div class="attack-btn" id="attackBtn">🥊</div>
+    </div>
+  </div>
+  <div id="hitText"></div>
+  <div id="gameOver">
+    <h2 id="overTitle">WYGRANA! 🎉</h2>
+    <p id="overText"></p>
+    <div id="rewardBox" style="display:none">🎁 NAGRODA:<br>🪙 +100 monet<br>💎 +1 klejnot<br>📦 +1 Boks Tubby Kremu</div>
+    <button class="btn btn-graj" style="padding:14px 28px;font-size:18px" onclick="showScreen('wybor')">🔁 ZAGRAJ ZNOWU</button><br><br>
+    <button class="btn btn-boks" style="padding:14px 28px;font-size:18px" onclick="showScreen('boksy')">📦 OTWÓRZ BOKS</button><br><br>
+    <button class="btn" style="background:#666;padding:14px 28px;font-size:16px" onclick="quitGame()">🏠 MENU</button>
+  </div>
+</div>
+
+<script>
+let ALL_CHARS=['tinki','dipsi','lala','pou','odkurzacz','sloneczko'];
+let coins = parseInt(localStorage.getItem('tubbyCoins')) || 0;
+let gems = parseInt(localStorage.getItem('tubbyGems')) || 0;
+let boxes = parseInt(localStorage.getItem('tubbyBoxes')) || 0;
+let totalWins = parseInt(localStorage.getItem('tubbyWins')) || 0;
+let totalOpened = parseInt(localStorage.getItem('tubbyOpened')) || 0;
+let pity = parseInt(localStorage.getItem('tubbyPity')) || 0;
+let pitySun = parseInt(localStorage.getItem('tubbyPitySun')) || 0;
+let unlocked = JSON.parse(localStorage.getItem('tubbyUnlocked') || '["tinki"]');
+let upgrades = JSON.parse(localStorage.getItem('tubbyUpgrades') || '{"tinki":0,"dipsi":0,"lala":0,"pou":0,"odkurzacz":0,"sloneczko":0}');
+let hypers = JSON.parse(localStorage.getItem('tubbyHypers') || '{"tinki":false,"dipsi":false,"lala":false,"pou":false,"odkurzacz":false,"sloneczko":false}');
+let unlockedSkins = JSON.parse(localStorage.getItem('tubbySkins') || '[]');
+let equippedSkins = JSON.parse(localStorage.getItem('tubbyEquipped') || '{"tinki":"normal","dipsi":"normal","lala":"normal","pou":"normal","odkurzacz":"normal","sloneczko":"normal"}');
+ALL_CHARS.forEach(id=>{ if(typeof upgrades[id]!=='number') upgrades[id]=0; if(typeof hypers[id]!=='boolean') hypers[id]=false; if(!equippedSkins[id]) equippedSkins[id]='normal'; });
+let BASE={
+  tinki:{name:'TINKI',full:'TINKI WINKI',hp:6000,dmg:350,speed:2.8,color:'#a855f7',emoji:'🟣',btn:'🥊',regen:180},
+  dipsi:{name:'DIPSI',full:'DIPSI',hp:3400,dmg:300,speed:3.1,color:'#22c55e',emoji:'🟢',btn:'🎩',regen:80},
+  lala:{name:'LA LA',full:'LA LA',hp:3000,dmg:550,speed:3.4,color:'#eab308',emoji:'🟡',btn:'🏀',regen:100},
+  pou:{name:'POU',full:'POU',hp:3800,dmg:650,speed:2.9,color:'#ef4444',emoji:'🔴',btn:'🛴',regen:120},
+  odkurzacz:{name:'ODKURZACZ',full:'ODKURZACZ ✨ MITYCZNY',hp:3200,dmg:500,speed:3.0,color:'#ff00ff',emoji:'🌪️',btn:'🧴',regen:90,mythic:true},
+  sloneczko:{name:'SŁONECZKO',full:'SŁONECZKO ☀️ MITYCZNE',hp:3500,dmg:600,speed:3.2,color:'#ffeb3b',emoji:'☀️',btn:'☀️',regen:150,mythic:true,sun:true}
+};
+let SKINS={
+  'tinki-zloty':{char:'tinki',name:'ZŁOTY TINKI',emoji:'👑',color:'#FFD700',desc:'Złoty!'},
+  'tinki-neon':{char:'tinki',name:'NEONOWY TINKI',emoji:'💜',color:'#ff00ff',desc:'Neon!'},
+  'dipsi-mint':{char:'dipsi',name:'MIĘTOWY DIPSI',emoji:'🌿',color:'#00ffcc',desc:'Mięta!'},
+  'dipsi-ogien':{char:'dipsi',name:'OGNISTY DIPSI',emoji:'🔥',color:'#ff4400',desc:'Ogień!'},
+  'lala-slodycz':{char:'lala',name:'SŁODKA LA LA',emoji:'🍬',color:'#ff69b4',desc:'Słodka!'},
+  'lala-galaktyka':{char:'lala',name:'GALAKTYCZNA LA LA',emoji:'🌌',color:'#4b0082',desc:'Kosmos!'},
+  'pou-diament':{char:'pou',name:'DIAMENTOWY POU',emoji:'💎',color:'#00e5ff',desc:'Diament!'},
+  'pou-wampir':{char:'pou',name:'WAMPIR POU',emoji:'🧛',color:'#1a1a1a',desc:'Wampir!'},
+  'odkurzacz-turbo':{char:'odkurzacz',name:'TURBO ODKURZACZ',emoji:'⚡',color:'#ffff00',desc:'Turbo!'},
+  'odkurzacz-lod':{char:'odkurzacz',name:'LODOWY ODKURZACZ',emoji:'🧊',color:'#00ffff',desc:'Lód!'},
+  'sloneczko-zlote':{char:'sloneczko',name:'ZŁOTE SŁONECZKO',emoji:'🌟',color:'#FFD700',desc:'Czyste złoto!'},
+  'sloneczko-zacmienie':{char:'sloneczko',name:'KRWAWE ZAĆMIENIE',emoji:'🌑',color:'#8b0000',desc:'Zaćmienie!'}
+};
+let BOSSES_DEF=[
+  {emoji:'👹',name:'OGROMNY NOO-NOO',color:'#8b0000'},
+  {emoji:'👑',name:'KRÓL KREMU',color:'#4b0082'},
+  {emoji:'👺',name:'ZŁY TUBBY',color:'#ff4400'},
+  {emoji:'👻',name:'DUCH KREMU',color:'#888888'},
+  {emoji:'🤖',name:'MEGA ROBOT',color:'#333333'},
+  {emoji:'🐉',name:'SMOK KREMU',color:'#00aa00'},
+  {emoji:'🦖',name:'DINO TUBBY',color:'#228b22'},
+  {emoji:'🧟',name:'ZOMBI NOO-NOO',color:'#556b2f'},
+  {emoji:'🦹',name:'SUPER ZŁOL',color:'#00008b'},
+  {emoji:'😈',name:'FINAL BOSS DIABEŁ',color:'#ff0000'},
+  {emoji:'👽',name:'KOSMITA TUBBY',color:'#00ff00'},
+  {emoji:'🧛',name:'WAMPIR KREMU',color:'#800080'},
+  {emoji:'🧞',name:'DŻIN Z KREMU',color:'#00bfff'},
+  {emoji:'🦈',name:'REKIN NOO-NOO',color:'#4682b4'},
+  {emoji:'🦁',name:'LEW TUBBY',color:'#daa520'},
+  {emoji:'🐙',name:'OŚMIORNICA KREMU',color:'#ff1493'},
+  {emoji:'🧌',name:'TROLL TUBBY',color:'#6b8e23'},
+  {emoji:'🤡',name:'ZŁY KLAUN',color:'#ff6347'},
+  {emoji:'👁️',name:'WIELKIE OKO',color:'#ff0000'},
+  {emoji:'💀',name:'MEGA ŚMIERĆ',color:'#000000'}
+];
+function getSkinFor(id){
+  let skinId = equippedSkins[id] || 'normal';
+  if(skinId==='normal') return {name:'Normalny',emoji:BASE[id].emoji,color:BASE[id].color};
+  let s = SKINS[skinId];
+  if(!s) return {name:'Normalny',emoji:BASE[id].emoji,color:BASE[id].color};
+  return s;
+}
+function getStats(id){
+  let b = BASE[id];
+  let lvl = upgrades[id] || 0;
+  let mult = 1 + lvl * 0.10;
+  let skin = getSkinFor(id);
+  return {...b, hp: Math.floor(b.hp*mult), dmg: Math.floor(b.dmg*mult), lvl:lvl, hasHyper: hypers[id]||false, skin:skin, skinId: equippedSkins[id]||'normal' };
+}
+let CHARACTERS = {};
+function refreshChars(){ ALL_CHARS.forEach(id=> CHARACTERS[id]=getStats(id)); }
+refreshChars();
+function upgradeCost(lvl){ return 1000 + lvl*500; }
+let gameMode = 'normal';
+function selectMode(mode){
+  gameMode = mode;
+  document.getElementById('mode-normal').classList.toggle('selected', mode==='normal');
+  document.getElementById('mode-boss').classList.toggle('selected', mode==='boss');
+  document.getElementById('playBtn').style.display = mode==='normal' ? 'block' : 'none';
+  document.getElementById('playBossBtn').style.display = mode==='boss' ? 'block' : 'none';
+}
+function saveAll(){
+  localStorage.setItem('tubbyCoins', coins);
+  localStorage.setItem('tubbyGems', gems);
+  localStorage.setItem('tubbyBoxes', boxes);
+  localStorage.setItem('tubbyWins', totalWins);
+  localStorage.setItem('tubbyOpened', totalOpened);
+  localStorage.setItem('tubbyPity', pity);
+  localStorage.setItem('tubbyPitySun', pitySun);
+  localStorage.setItem('tubbyUnlocked', JSON.stringify(unlocked));
+  localStorage.setItem('tubbyUpgrades', JSON.stringify(upgrades));
+  localStorage.setItem('tubbyHypers', JSON.stringify(hypers));
+  localStorage.setItem('tubbySkins', JSON.stringify(unlockedSkins));
+  localStorage.setItem('tubbyEquipped', JSON.stringify(equippedSkins));
+  refreshChars();
+  document.getElementById('coins').innerText = coins;
+  document.getElementById('gems').innerText = gems;
+  document.getElementById('boxes').innerText = boxes;
+  document.getElementById('boksCount').innerText = boxes;
+  document.getElementById('boksCoins').innerText = coins;
+  document.getElementById('boksGems').innerText = gems;
+  document.getElementById('upCoins').innerText = coins;
+  document.getElementById('totalWins').innerText = totalWins;
+  document.getElementById('totalOpened').innerText = totalOpened;
+  document.getElementById('totalUnlocked').innerText = unlocked.length + ' / 6';
+  document.getElementById('unlockedList').innerText = unlocked.map(id=>CHARACTERS[id].name).join(', ');
+  document.getElementById('skinCount').innerText = unlockedSkins.length + ' / 12';
+  document.getElementById('boksSkins').innerText = unlockedSkins.length + ' / 12';
+  let hasOdk = unlocked.includes('odkurzacz');
+  let hasSun = unlocked.includes('sloneczko');
+  document.getElementById('pityBox').style.display = hasOdk ? 'none' : 'block';
+  document.getElementById('pityDoneBox').style.display = hasOdk ? 'block' : 'none';
+  if(!hasOdk){
+    document.getElementById('pityCount').innerText = pity;
+    document.getElementById('pityFill').style.width = Math.min(100, pity/25*100)+'%';
+    document.getElementById('pityText').innerText = 'Jeszcze '+(25-pity)+' do gwarancji';
+  }
+  document.getElementById('pitySunBox').style.display = hasSun ? 'none' : 'block';
+  document.getElementById('pitySunDoneBox').style.display = hasSun ? 'block' : 'none';
+  if(!hasSun){
+    document.getElementById('pitySunCount').innerText = pitySun;
+    document.getElementById('pitySunFill').style.width = Math.min(100, pitySun/30*100)+'%';
+    document.getElementById('pitySunText').innerText = 'Jeszcze '+(30-pitySun)+' do gwarancji';
+  }
+  ALL_CHARS.forEach(id=>{
+    let elHp=document.getElementById('card-hp-'+id); if(elHp) elHp.innerText=CHARACTERS[id].hp;
+    let elDmg=document.getElementById('card-dmg-'+id); if(elDmg) elDmg.innerText=CHARACTERS[id].dmg;
+    let elLvl=document.getElementById('card-lvl-'+id); if(elLvl) elLvl.innerText = upgrades[id]>0 ? '⭐ LVL '+upgrades[id] + (hypers[id]?' 🔥HIPER!':'') : '';
+    let homeLvl=document.getElementById('home-lvl-'+id); if(homeLvl) homeLvl.innerText = 'LVL '+(upgrades[id]||0) + (hypers[id]?' 🔥':'');
+    let upb=document.getElementById('upbtn-'+id); if(upb) upb.classList.toggle('locked', !unlocked.includes(id));
+    let skb=document.getElementById('skinbtn-'+id); if(skb) skb.classList.toggle('locked', !unlocked.includes(id));
+    let cardEmoji=document.getElementById('card-emoji-'+id); if(cardEmoji) cardEmoji.innerText = getSkinFor(id).emoji;
+    let homeFace=document.getElementById('home-face-'+id); if(homeFace) homeFace.innerText = getSkinFor(id).emoji;
+    let cardSkin=document.getElementById('card-skin-'+id); if(cardSkin) cardSkin.innerText = (equippedSkins[id]||'normal')!=='normal' ? '👗 ' + SKINS[equippedSkins[id]].name : '';
+    let home=document.getElementById('home-'+id); if(home) home.style.background = getSkinFor(id).color;
+  });
+  let ob = document.getElementById('openBtn');
+  if(ob){ ob.innerText = '📦 OTWÓRZ 1 BOKS ('+boxes+')'; ob.disabled = boxes<=0; }
+  let ob10 = document.getElementById('open10Btn');
+  if(ob10){ ob10.innerText = '📦📦 OTWÓRZ 10 NA RAZ! (masz '+boxes+')'; ob10.disabled = boxes<10; }
+  updateLockUI(); updateUpPanel(); renderSkins();
+}
+function updateLockUI(){
+  ['dipsi','lala','pou','odkurzacz','sloneczko'].forEach(id=>{
+    let isUnlocked = unlocked.includes(id);
+    let home = document.getElementById('home-'+id);
+    if(home){ home.classList.toggle('locked', !isUnlocked); let l=home.querySelector('.lock'); if(l) l.style.display = isUnlocked ? 'none' : 'block'; }
+    let card = document.getElementById('card-'+id);
+    if(card){ card.classList.toggle('locked', !isUnlocked); let badge = card.querySelector('.lock-badge'); if(badge) badge.style.display = isUnlocked ? 'none' : 'block'; }
+    let post = document.getElementById('post-'+id);
+    if(post) post.classList.toggle('locked', !isUnlocked);
+  });
+}
+function giveWinReward(){ coins += 100; gems += 1; boxes += 1; totalWins += 1; saveAll(); document.getElementById('rewardBox').style.display='block'; }
+let skinSelected = 'tinki';
+function selectSkinChar(id){
+  if(!unlocked.includes(id)){ alert('🔒 Najpierw odblokuj '+BASE[id].full+'!'); return; }
+  skinSelected = id;
+  ALL_CHARS.forEach(k=>{ let b=document.getElementById('skinbtn-'+k); if(b) b.classList.toggle('active', k===id); });
+  renderSkins();
+}
+function renderSkins(){
+  let id = skinSelected;
+  let list = document.getElementById('skinList');
+  if(!list) return;
+  ALL_CHARS.forEach(k=>{ let b=document.getElementById('skinbtn-'+k); if(b) b.classList.toggle('active', k===id); });
+  let html = '';
+  let isEqNormal = (equippedSkins[id]||'normal')==='normal';
+  html += '<div class="skin-card '+(isEqNormal?'equipped':'')+'"><div style="font-size:40px">'+BASE[id].emoji+'</div><div style="flex:1"><b>Normalny '+BASE[id].full+'</b></div><button class="skin-btn" onclick="equipSkin(\''+id+'\',\'normal\')" '+(isEqNormal?'disabled':'')+'>'+(isEqNormal?'✅ ZAŁOŻONY':'ZAŁÓŻ')+'</button></div>';
+  Object.keys(SKINS).forEach(sid=>{
+    let s = SKINS[sid];
+    if(s.char!==id) return;
+    let has = unlockedSkins.includes(sid);
+    let isEq = equippedSkins[id]===sid;
+    html += '<div class="skin-card '+(isEq?'equipped':'')+' '+(has?'':'locked')+'"><div style="font-size:40px">'+s.emoji+'</div><div style="flex:1"><b>'+s.name+'</b><br><span style="opacity:.7">'+s.desc+'</span></div>';
+    if(!has) html += '<button class="skin-btn" disabled>🔒 Z BOKSU</button>';
+    else html += '<button class="skin-btn" onclick="equipSkin(\''+id+'\',\''+sid+'\')" '+(isEq?'disabled':'')+'>'+(isEq?'✅ ZAŁOŻONY':'ZAŁÓŻ 👗')+'</button>';
+    html += '</div>';
+  });
+  list.innerHTML = html;
+}
+function equipSkin(charId, skinId){
+  if(skinId!=='normal' && !unlockedSkins.includes(skinId)){ alert('Nie masz tego skina!'); return; }
+  equippedSkins[charId]=skinId;
+  saveAll();
+  alert('👗 Założono: '+(skinId==='normal'?'Normalny':SKINS[skinId].name)+' dla '+BASE[charId].full+'!');
+}
+function showSkinUnlock(skinId){
+  let s = SKINS[skinId];
+  let popup = document.getElementById('unlockPopup');
+  popup.className = '';
+  popup.style.display='flex'; popup.style.position='fixed'; popup.style.inset='0'; popup.style.background='linear-gradient(135deg,#e91e63,#ff9800)'; popup.style.flexDirection='column'; popup.style.alignItems='center'; popup.style.justifyContent='center'; popup.style.zIndex='100'; popup.style.color='white'; popup.style.textAlign='center'; popup.style.padding='20px';
+  document.getElementById('unlockEmoji').innerText = s.emoji;
+  document.getElementById('unlockTitle').innerText = '👗 NOWE PRZEBRANIE!';
+  document.getElementById('unlockText').innerText = s.name+' dla '+BASE[s.char].full+'!\n'+s.desc;
+  popup.dataset.type='skin'; popup.dataset.char=s.char; selectedChar = s.char;
+}
+function closeUnlock(){
+  let popup = document.getElementById('unlockPopup');
+  let type = popup.dataset.type;
+  popup.style.display='none'; popup.className = ''; popup.style.background=''; popup.dataset.type='';
+  if(type==='skin'){ selectSkinChar(popup.dataset.char||selectedChar); showScreen('skiny'); }
+  else { selectChar(selectedChar); showScreen('wybor'); }
+}
+let upSelected = 'tinki';
+function selectUpChar(id){
+  if(!unlocked.includes(id)){ alert('🔒 Najpierw odblokuj '+BASE[id].full+' z Boksu!'); return; }
+  upSelected = id;
+  ALL_CHARS.forEach(k=>{ let b=document.getElementById('upbtn-'+k); if(b) b.classList.toggle('active', k===id); });
+  updateUpPanel();
+}
+function updateUpPanel(){
+  let id = upSelected;
+  let upBtn = document.getElementById('upBtn');
+  let hyperPanel = document.getElementById('hyperPanel');
+  let hyperBtn = document.getElementById('hyperBtn');
+  let hyperStatus = document.getElementById('hyperStatus');
+  hyperPanel.style.display = 'none'; hyperBtn.disabled = false; hyperBtn.innerText = '🔥 KUPIĘ HIPERKĘ ZA 5000 🪙'; hyperStatus.innerText = ''; upBtn.disabled = false; upBtn.style.display = 'block';
+  ALL_CHARS.forEach(k=>{ let b=document.getElementById('upbtn-'+k); if(b) b.classList.toggle('active', k===id); });
+  let c = getStats(id);
+  let lvl = upgrades[id] || 0;
+  let hasHyper = hypers[id] || false;
+  document.getElementById('upEmoji').innerText = getSkinFor(id).emoji;
+  document.getElementById('upName').innerText = BASE[id].full + (hasHyper ? ' 🔥 HIPER!' : '');
+  document.getElementById('upDots').innerText = '★'.repeat(lvl) + '☆'.repeat(10-lvl);
+  document.getElementById('upLvl').innerText = lvl + ' / 10';
+  document.getElementById('upHp').innerText = c.hp;
+  document.getElementById('upDmg').innerText = c.dmg;
+  if(lvl < 10){
+    let nextMult = 1 + (lvl+1)*0.10;
+    document.getElementById('upNext').innerText = 'Następne: HP '+Math.floor(BASE[id].hp*nextMult)+' | Atak '+Math.floor(BASE[id].dmg*nextMult);
+    let cost = upgradeCost(lvl);
+    upBtn.disabled = coins < cost;
+    upBtn.innerText = '⬆️ ULEPSZ ZA '+cost+' 🪙 (masz '+coins+')';
+    hyperPanel.style.display = 'none';
+  } else {
+    document.getElementById('upNext').innerText = '🏆 MAX! HP x2 i Atak x2!';
+    upBtn.disabled = true; upBtn.innerText = '🏆 MAX POZIOM 10!';
+    hyperPanel.style.display = 'block';
+    if(hasHyper){ hyperBtn.disabled = true; hyperBtn.innerText = '🔥 HIPERKA KUPIONA! ✅'; hyperStatus.innerText = 'W grze masz przycisk 🔥 HIPER!'; }
+    else { hyperBtn.disabled = coins < 5000; hyperBtn.innerText = '🔥 KUPIĘ HIPERKĘ ZA 5000 🪙 (masz '+coins+')'; hyperStatus.innerText = ''; }
+  }
+}
+function upgradeChar(){
+  let id = upSelected;
+  let lvl = upgrades[id]||0;
+  if(lvl>=10){ alert('Już MAX! Kup Hiperkę!'); return; }
+  let cost = upgradeCost(lvl);
+  if(coins < cost){ alert('Za mało monet! Potrzebujesz '+cost+' 🪙, masz '+coins); return; }
+  coins -= cost; upgrades[id] = lvl+1; saveAll();
+  if(upgrades[id]===10) alert('🏆 '+BASE[id].full+' osiągnął 10 POZIOM! 🏆\nTeraz możesz kupić HIPERKĘ!');
+  else alert('⬆️ '+BASE[id].full+' ulepszony do '+upgrades[id]+' poziomu!');
+}
+function buyHyper(){
+  let id = upSelected;
+  if((upgrades[id]||0) < 10){ alert('Najpierw wbij 10 poziom!'); return; }
+  if(hypers[id]){ alert('Już masz Hiperkę!'); return; }
+  if(coins < 5000){ alert('Potrzebujesz 5000 🪙, masz '+coins); return; }
+  coins -= 5000; hypers[id] = true; saveAll();
+  alert('🔥🔥 HIPERKA KUPIONA! 🔥🔥\n\n'+BASE[id].full+' ma teraz HIPERKĘ!');
+}
+function openOneBoxInternal(){
+  let lockedNormal = ['dipsi','lala','pou'].filter(id=>!unlocked.includes(id));
+  let lockedSkins = Object.keys(SKINS).filter(sid=>!unlockedSkins.includes(sid));
+  let roll = Math.random();
+  let hasOdk = unlocked.includes('odkurzacz');
+  let hasSun = unlocked.includes('sloneczko');
+  if(!hasOdk && pity >= 25){ unlocked.push('odkurzacz'); pity = 0; saveAll(); return {type:'mythic', text:'✨ GWARANCJA! ODKURZACZ!'}; }
+  if(!hasSun && pitySun >= 30){ unlocked.push('sloneczko'); pitySun = 0; saveAll(); return {type:'mythic-sun', text:'☀️ GWARANCJA! SŁONECZKO!'}; }
+  if(!hasOdk && roll < 0.04){ unlocked.push('odkurzacz'); pity = 0; saveAll(); return {type:'mythic', text:'✨✨ ODKURZACZ MITYCZNY! ✨✨'}; }
+  if(!hasSun && roll >= 0.04 && roll < 0.08){ unlocked.push('sloneczko'); pitySun = 0; saveAll(); return {type:'mythic-sun', text:'☀️☀️ SŁONECZKO MITYCZNE! ☀️☀️'}; }
+  if(roll >= 0.08 && roll < 0.26 && lockedSkins.length > 0){
+    let newSkin = lockedSkins[Math.floor(Math.random()*lockedSkins.length)];
+    unlockedSkins.push(newSkin);
+    if(!hasOdk) pity++; if(!hasSun) pitySun++;
+    saveAll();
+    return {type:'skin', text:'👗 '+SKINS[newSkin].name+'!', skin:newSkin};
+  }
+  if(roll >= 0.26 && roll < 0.40 && lockedNormal.length > 0){
+    let newChar = lockedNormal[Math.floor(Math.random()*lockedNormal.length)];
+    unlocked.push(newChar); if(!hasOdk) pity++; if(!hasSun) pitySun++; saveAll(); return {type:'normal', text:'🎉 '+BASE[newChar].full, char:newChar};
+  }
+  if(!hasOdk) pity++; if(!hasSun) pitySun++;
+  let result = {type:'coins', text:''};
+  if(roll >= 0.40 && roll < 0.75){ let m = 50 + Math.floor(Math.random()*200); coins += m; result.text='🪙 +'+m; }
+  else if(roll >= 0.75 && roll < 0.90){ let g = 1 + Math.floor(Math.random()*2); gems += g; result.text='💎 +'+g; }
+  else { let m = 300 + Math.floor(Math.random()*300); coins += m; result.text='🎉 JACKPOT 🪙 +'+m; }
+  saveAll(); return result;
+}
+function openBox(){
+  if(boxes<=0){ alert('Nie masz boksów!'); return; }
+  boxes -= 1; totalOpened += 1;
+  let r = openOneBoxInternal(); saveAll();
+  let res = document.getElementById('boxResult'); res.style.display='block';
+  let hasOdk = unlocked.includes('odkurzacz');
+  let hasSun = unlocked.includes('sloneczko');
+  let pityTxt = '';
+  if(!hasOdk) pityTxt += '<br>Litość Odkurzacz: '+pity+' / 25';
+  if(!hasSun) pityTxt += '<br>Litość Słoneczko: '+pitySun+' / 30';
+  if(r.type==='mythic'){ res.innerHTML = '✨✨✨ MITYCZNY TRAF! ✨✨✨<br><br>🌪️ <b>ODKURZACZ</b> ODBLOKOWANY!'; setTimeout(()=> showUnlock('odkurzacz'), 300); }
+  else if(r.type==='mythic-sun'){ res.innerHTML = '☀️☀️☀️ MITYCZNY TRAF! ☀️☀️☀️<br><br>☀️ <b>SŁONECZKO</b> ODBLOKOWANE!'; setTimeout(()=> showUnlock('sloneczko'), 300); }
+  else if(r.type==='skin'){ res.innerHTML = '👗 NOWE PRZEBRANIE!<br><br>'+r.text+' ODBLOKOWANE!'; setTimeout(()=> showSkinUnlock(r.skin), 300); }
+  else if(r.type==='normal'){ res.innerHTML = '🎉 TRAFIŁEŚ POSTAĆ!<br><br>'+r.text+' ODBLOKOWANA!'; setTimeout(()=> showUnlock(r.char), 300); }
+  else { res.innerHTML = '📦 Otworzyłeś boks!<br><br>'+r.text+pityTxt+'<br>Masz: 🪙 '+coins+' | 💎 '+gems+' | 📦 '+boxes+' | 👗 '+unlockedSkins.length+' / 12'; }
+}
+function open10Boxes(){
+  if(boxes<10){ alert('Masz za mało! Masz: '+boxes); return; }
+  let results=[]; let gotMythic=null; let gotChars=[]; let gotSkin=null;
+  for(let i=0;i<10;i++){ boxes -= 1; totalOpened += 1; let r = openOneBoxInternal(); results.push(r.text); if(r.type==='mythic') gotMythic='odkurzacz'; if(r.type==='mythic-sun') gotMythic='sloneczko'; if(r.type==='normal') gotChars.push(r.char); if(r.type==='skin' && !gotSkin) gotSkin=r.skin; }
+  saveAll();
+  let res = document.getElementById('boxResult'); res.style.display='block';
+  res.innerHTML = '📦📦 OTWORZYŁEŚ 10 BOKSÓW!<br><br>' + results.join('<br>') + '<br>Zostało: '+boxes;
+  if(gotMythic) setTimeout(()=> showUnlock(gotMythic), 400);
+  else if(gotSkin) setTimeout(()=> showSkinUnlock(gotSkin), 400);
+  else if(gotChars.length>0) setTimeout(()=> showUnlock(gotChars[0]), 400);
+}
+function showUnlock(charId){
+  let c = BASE[charId];
+  let popup = document.getElementById('unlockPopup');
+  popup.className=''; popup.style.background=''; popup.dataset.type='char';
+  if(charId==='sloneczko'){ popup.style.background='linear-gradient(135deg,#ffeb3b,#ff9800)'; popup.style.color='black'; document.getElementById('unlockTitle').innerText = '☀️ MITYCZNE SŁONECZKO! ☀️'; }
+  else if(c.mythic){ popup.style.background='linear-gradient(135deg,rgba(255,0,255,.9),rgba(0,229,255,.9))'; popup.style.color='white'; document.getElementById('unlockTitle').innerText = '✨ MITYCZNA POSTAĆ! ✨'; }
+  else { popup.style.background='rgba(0,0,0,.9)'; popup.style.color='white'; document.getElementById('unlockTitle').innerText = 'NOWA POSTAĆ!'; }
+  document.getElementById('unlockEmoji').innerText = c.emoji;
+  document.getElementById('unlockText').innerText = c.full + ' odblokowana! 🎉 HP: '+getStats(charId).hp+' | Atak: '+getStats(charId).dmg;
+  popup.style.display='flex'; selectedChar = charId;
+}
+let selectedChar='tinki';
+function selectChar(id){
+  if(!unlocked.includes(id)){ alert('🔒 Zablokowana! Otwórz Boks!'); return; }
+  selectedChar=id;
+  ALL_CHARS.forEach(k=>{ let el=document.getElementById('card-'+k); if(el) el.classList.remove('selected'); });
+  document.getElementById('card-'+id).classList.add('selected');
+  document.getElementById('selectedName').innerText=BASE[id].name;
+  document.getElementById('selectedNameBoss').innerText=BASE[id].name;
+  document.getElementById('attackBtn').innerText=BASE[id].btn;
+  upSelected = id; skinSelected = id;
+}
+function showScreen(name){
+  ['wybor','postacie','boksy','gameScreen','ulepsz','skiny'].forEach(id=> document.getElementById(id).classList.remove('active'));
+  if(name!=='home'){ document.getElementById(name).classList.add('active'); saveAll(); }
+  if(name==='ulepsz'){ updateUpPanel(); }
+  if(name==='skiny'){ renderSkins(); }
+}
+saveAll();
+let canvas=document.getElementById('gameCanvas'), ctx=canvas.getContext('2d');
+let gameRunning=false, raf=0, player=null, enemies=[], bosses=[], toasts=[], coinsInGame=[], bullets=[], enemyBullets=[], puddles=[], keys={}, moveX=0, moveY=0, superCharge=0, hyperCharge=0, coinsCollected=0, kills=0, lastDir={x:1,y:0}, lastAttack=0, lastHitText=0, lastDamageTime=0, lastFrameTime=0, bossKills=0;
+let W=0,H=0;
+function resize(){ W=window.innerWidth; H=window.innerHeight; canvas.width=W; canvas.height=H; }
+window.addEventListener('resize', resize);
+function spawnBossWave(from, to){
+  for(let k=from;k<to;k++){
+    let def = BOSSES_DEF[k];
+    bosses.push({x:80+Math.random()*(W-160),y:110+Math.random()*(H-220),hp:10000,maxHp:10000,speed:0.9+Math.random()*0.4,r:38+Math.random()*8,emoji:def.emoji,name:def.name,color:def.color,lastShot:Date.now(),shootCd:1400+Math.random()*600,bossIndex:k});
+  }
+  updateBossUI();
+}
+function startGame(){
+  resize();
+  document.getElementById('gameOver').style.display='none';
+  document.getElementById('rewardBox').style.display='none';
+  document.getElementById('regenText').style.display='none';
+  document.getElementById('gameScreen').classList.add('active');
+  document.getElementById('wybor').classList.remove('active');
+  let c=CHARACTERS[selectedChar];
+  document.getElementById('hudName').innerText=c.name;
+  document.getElementById('hudLvl').innerText = c.lvl>0 ? '⭐ LVL '+c.lvl + (c.hasHyper?' 🔥':'') : '';
+  document.getElementById('hudSkin').innerText = c.skinId!=='normal' ? '👗 '+c.skin.name : '';
+  document.getElementById('hudMode').innerText = gameMode==='boss' ? '👹 20 BOSSÓW' : '🍞 NORMALNY';
+  document.getElementById('attackBtn').innerText=c.btn;
+  document.getElementById('hyperGameBtn').style.display = c.hasHyper ? 'flex' : 'none';
+  document.getElementById('hyperHud').style.display = c.hasHyper ? 'block' : 'none';
+  document.getElementById('bossHpBox').style.display = gameMode==='boss' ? 'block' : 'none';
+  document.getElementById('hudGoal').innerHTML = gameMode==='boss' ? '👹 Zabij 20 Bossów!' : '🍞 <span id="toastCount">0</span>/8';
+  player={x:W/2,y:H/2,hp:c.hp,maxHp:c.hp,speed:c.speed,dmg:c.dmg,regen:c.regen,r:26,color:c.skin.color,emoji:c.skin.emoji,hasHyper:c.hasHyper,lvl:c.lvl};
+  enemies=[]; bosses=[]; toasts=[]; coinsInGame=[]; bullets=[]; enemyBullets=[]; puddles=[]; coinsCollected=0; superCharge=0; hyperCharge=0; kills=0; bossKills=0; lastAttack=0;
+  lastDamageTime = Date.now(); lastFrameTime = Date.now();
+  document.getElementById('killCount').innerText='0'; document.getElementById('gameCoins').innerText='0';
+  if(gameMode==='boss'){
+    window.bossWave = 1; window.bossTotalSpawned = 5;
+    spawnBossWave(0,5);
+    for(let i=0;i<6;i++) spawnToast();
+    showHit('👹👹 20 BOSSÓW! FALA 1! 👹👹');
+  } else {
+    for(let i=0;i<4;i++) spawnEnemy();
+    for(let i=0;i<8;i++) spawnToast();
+  }
+  for(let i=0;i<5;i++) spawnCoin();
+  gameRunning=true; updateSuperUI(); updateBossUI();
+  let t = gameMode==='boss' ? 300 : 60;
+  document.getElementById('timeLeft').innerText=t;
+  clearInterval(window.timer);
+  window.timer=setInterval(()=>{ if(!gameRunning) return; t--; document.getElementById('timeLeft').innerText=t; if(t<=0) endGame(false); },1000);
+  cancelAnimationFrame(raf); raf=requestAnimationFrame(loop);
+}
+function spawnEnemy(){ let x,y,tries=0; do{ x=40+Math.random()*(W-80); y=100+Math.random()*(H-160); tries++; } while(player && Math.hypot(x-player.x,y-player.y)<200 && tries<10); enemies.push({x,y,hp:1800,maxHp:1800,speed:1.5,r:24}); }
+function spawnToast(){ toasts.push({x:40+Math.random()*(W-80),y:90+Math.random()*(H-180)}); }
+function spawnCoin(){ coinsInGame.push({x:40+Math.random()*(W-80),y:90+Math.random()*(H-180)}); }
+function quitGame(){ gameRunning=false; clearInterval(window.timer); cancelAnimationFrame(raf); document.getElementById('gameScreen').classList.remove('active'); saveAll(); }
+function endGame(win){
+  if(!gameRunning) return;
+  gameRunning=false; clearInterval(window.timer); cancelAnimationFrame(raf);
+  document.getElementById('regenText').style.display='none';
+  document.getElementById('bossHpBox').style.display='none';
+  document.getElementById('gameOver').style.display='flex';
+  document.getElementById('rewardBox').style.display='none';
+  if(win){
+    document.getElementById('overTitle').innerText = gameMode==='boss' ? 'WSZYSTKIE 20 BOSSÓW POKONANE! 👹🎉' : 'WYGRANA! 🎉';
+    document.getElementById('overText').innerText = gameMode==='boss' ? 'Jako '+BASE[selectedChar].full+' pokonałeś 20 BOSSÓW! LEGENDA!' : 'Jako '+BASE[selectedChar].full+' LVL '+(upgrades[selectedChar]||0)+'! Kills: '+kills;
+    coins += coinsCollected; giveWinReward();
+  } else {
+    document.getElementById('overTitle').innerText = gameMode==='boss' ? 'BOSSY WYGRYWAJĄ! 👹💀' : 'KONIEC! ⏱️';
+    document.getElementById('overText').innerText = gameMode==='boss' ? 'Jako '+BASE[selectedChar].full+'! Zabiłeś '+bossKills+' / 20 Bossów!' : 'Jako '+BASE[selectedChar].full+'! Kills: '+kills;
+    coins += coinsCollected; saveAll();
+  }
+}
+function updateBossUI(){
+  if(gameMode!=='boss') return;
+  let totalHp = bosses.reduce((s,b)=>s+Math.max(0,b.hp),0);
+  document.getElementById('bossLeft').innerText = bosses.length + ' (zabici: '+bossKills+' / 20)';
+  document.getElementById('bossTotalHp').innerText = Math.floor(totalHp);
+  document.getElementById('bossWave').innerText = window.bossWave||1;
+  let list = document.getElementById('bossList');
+  if(list){
+    let html='';
+    bosses.forEach(b=>{ html += '<div class="boss-hp-row"><span style="font-size:14px">'+b.emoji+'</span><span style="color:white;font-size:10px;width:90px;overflow:hidden;white-space:nowrap">'+b.name+'</span><div class="boss-hp-bar"><div class="boss-hp-fill" style="width:'+(b.hp/b.maxHp*100)+'%;background:'+b.color+'"></div></div><span style="color:white;font-size:10px">'+Math.floor(b.hp)+'</span></div>'; });
+    list.innerHTML = html;
+  }
+}
+function updateSuperUI(){
+  document.getElementById('superFill').style.width=superCharge+'%';
+  document.getElementById('superPct').innerText=Math.floor(superCharge)+'%';
+  document.getElementById('superBtn').classList.toggle('ready', superCharge>=100);
+  document.getElementById('superBtn').innerHTML = superCharge>=100 ? 'SUPER!<br>💥' : 'SUPER<br>'+Math.floor(superCharge)+'%';
+  if(player && player.hasHyper){
+    document.getElementById('hyperFill').style.width=hyperCharge+'%';
+    document.getElementById('hyperPct').innerText=Math.floor(hyperCharge)+'%';
+    document.getElementById('hyperGameBtn').classList.toggle('ready', hyperCharge>=100);
+    document.getElementById('hyperGameBtn').innerHTML = hyperCharge>=100 ? 'HIPER!<br>🔥' : 'HIPER<br>'+Math.floor(hyperCharge)+'%';
+  }
+}
+function showHit(txt){ let now=Date.now(); if(now-lastHitText<300) return; lastHitText=now; let el=document.getElementById('hitText'); el.innerText=txt; el.style.display='block'; clearTimeout(window.hitTimer); window.hitTimer=setTimeout(()=> el.style.display='none', 900); }
+function loop(){
+  if(!gameRunning) return;
+  let now = Date.now(); let dt = (now - lastFrameTime) / 1000; lastFrameTime = now;
+  let dx=(keys['a']||keys['arrowleft']?-1:0)+(keys['d']||keys['arrowright']?1:0)+moveX;
+  let dy=(keys['w']||keys['arrowup']?-1:0)+(keys['s']||keys['arrowdown']?1:0)+moveY;
+  if(dx||dy){ let d=Math.hypot(dx,dy); lastDir={x:dx/d,y:dy/d}; player.x+=dx/d*player.speed; player.y+=dy/d*player.speed; }
+  if(player.x<30) player.x=30; if(player.x>W-30) player.x=W-30; if(player.y<80) player.y=80; if(player.y>H-30) player.y=H-30;
+  let timeSinceDamage = (now - lastDamageTime) / 1000;
+  let regenEl = document.getElementById('regenText'); let regenFill = document.getElementById('regenFill'); let regenTimer = document.getElementById('regenTimer');
+  if(player.hp < player.maxHp && timeSinceDamage >= 6){ player.hp = Math.min(player.maxHp, player.hp + player.regen * dt); regenEl.style.display='block'; regenEl.innerText = '💚 LECZENIE +'+player.regen+'/s'; regenFill.style.width='100%'; regenFill.style.background='#4caf50'; regenTimer.innerText='LECZĘ! 💚'; }
+  else if(player.hp >= player.maxHp){ regenEl.style.display='none'; regenFill.style.width='100%'; regenTimer.innerText='FULL HP! 💚'; }
+  else { regenEl.style.display='none'; let pct = Math.min(100, timeSinceDamage / 6 * 100); regenFill.style.width = pct + '%'; regenFill.style.background = '#ff9800'; regenTimer.innerText = 'Regen za ' + Math.ceil(6 - timeSinceDamage) + 's'; }
+  for(let i=0;i<enemies.length;i++){ let e=enemies[i]; let ex=player.x-e.x, ey=player.y-e.y, d=Math.hypot(ex,ey)||1; e.x+=ex/d*e.speed; e.y+=ey/d*e.speed; if(d<e.r+player.r){ player.hp-=10; lastDamageTime = Date.now(); if(player.hp<=0){ player.hp=0; endGame(false); return; } } }
+  for(let i=0;i<bosses.length;i++){
+    let b=bosses[i];
+    let ex=player.x-b.x, ey=player.y-b.y, d=Math.hypot(ex,ey)||1;
+    b.x+=ex/d*b.speed; b.y+=ey/d*b.speed;
+    if(d<b.r+player.r){ player.hp-=5; lastDamageTime = Date.now(); if(player.hp<=0){ player.hp=0; endGame(false); return; } }
+    if(now - b.lastShot > b.shootCd){
+      b.lastShot = now;
+      let vx = ex/d*5, vy = ey/d*5;
+      enemyBullets.push({x:b.x,y:b.y,vx:vx,vy:vy,life:90,dmg:200,icon:'🔥'});
+      if(b.bossIndex % 2 === 1){
+        enemyBullets.push({x:b.x,y:b.y,vx:vx*0.9-1.5,vy:vy*0.9+1.5,life:90,dmg:200,icon:'🔥'});
+        enemyBullets.push({x:b.x,y:b.y,vx:vx*0.9+1.5,vy:vy*0.9-1.5,life:90,dmg:200,icon:'🔥'});
+      }
+    }
+  }
+  for(let i=enemyBullets.length-1;i>=0;i--){
+    let b=enemyBullets[i];
+    b.x+=b.vx; b.y+=b.vy; b.life--;
+    if(b.life<=0){ enemyBullets.splice(i,1); continue; }
+    if(Math.hypot(b.x-player.x,b.y-player.y) < 30){
+      player.hp -= b.dmg; lastDamageTime = Date.now(); showHit('💥 BOSS TRAFIŁ! -200 HP!'); enemyBullets.splice(i,1);
+      if(player.hp<=0){ player.hp=0; endGame(false); return; }
+    }
+  }
+  for(let i=puddles.length-1;i>=0;i--){ let p=puddles[i]; p.life -= dt; if(p.life<=0){ puddles.splice(i,1); continue; } for(let j=0;j<enemies.length;j++){ let e=enemies[j]; if(Math.hypot(e.x-p.x,e.y-p.y) < 38){ e.hp -= p.dmg * dt; } } for(let j=0;j<bosses.length;j++){ let b=bosses[j]; if(Math.hypot(b.x-p.x,b.y-p.y) < 50){ b.hp -= p.dmg * dt; } } }
+  for(let i=bullets.length-1;i>=0;i--){
+    let b=bullets[i]; b.x+=b.vx; b.y+=b.vy; b.life--;
+    if(b.bounce){ if(b.x<20||b.x>W-20) b.vx*=-1; if(b.y<70||b.y>H-20) b.vy*=-1; }
+    if(b.boomerang && b.life<25){ let dx=player.x-b.x, dy=player.y-b.y, d=Math.hypot(dx,dy)||1; b.vx=dx/d*9; b.vy=dy/d*9; if(d<30){ bullets.splice(i,1); continue; } }
+    if(b.puddle){ if(b.life<=0){ puddles.push({x:b.x,y:b.y,life:4,dmg:220}); bullets.splice(i,1); continue; } }
+    if(b.sunburst && b.life<=0){ bullets.splice(i,1); continue; }
+    if(b.life<=0){ bullets.splice(i,1); continue; }
+    let hitSomething=false;
+    for(let j=0;j<enemies.length;j++){ let e=enemies[j]; if(Math.hypot(b.x-e.x,b.y-e.y)<e.r+12){ e.hp-=b.dmg; if(b.puddle){ puddles.push({x:b.x,y:b.y,life:4,dmg:220}); bullets.splice(i,1); } else if(b.bounce||b.boomerang){ if(!b.hit) b.hit={}; if(!b.hit['e'+j]) b.hit['e'+j]=1; else continue; } else if(b.sunburst){ if(!b.hit) b.hit={}; if(!b.hit['e'+j]) b.hit['e'+j]=1; } else bullets.splice(i,1); hitSomething=true; break; } }
+    if(hitSomething) continue;
+    for(let j=0;j<bosses.length;j++){ let bo=bosses[j]; if(Math.hypot(b.x-bo.x,b.y-bo.y)<bo.r+12){ bo.hp-=b.dmg; updateBossUI(); if(b.puddle){ puddles.push({x:b.x,y:b.y,life:4,dmg:220}); bullets.splice(i,1); } else if(b.bounce||b.boomerang||b.sunburst){ if(!b.hit) b.hit={}; if(!b.hit['b'+j]) b.hit['b'+j]=1; else continue; } else bullets.splice(i,1); break; } }
+  }
+  for(let i=enemies.length-1;i>=0;i--){ if(enemies[i].hp<=0){ let e=enemies[i]; enemies.splice(i,1); kills++; if(coinsInGame.length<8) for(let k=0;k<2;k++) coinsInGame.push({x:e.x,y:e.y}); } }
+  for(let i=bosses.length-1;i>=0;i--){
+    if(bosses[i].hp<=0){
+      let b=bosses[i];
+      bosses.splice(i,1); bossKills++; kills++;
+      showHit('👹 BOSS POKONANY! '+b.name+'! '+bossKills+' / 20!');
+      for(let k=0;k<5;k++) coinsInGame.push({x:b.x,y:b.y});
+      updateBossUI();
+      if(bossKills===5 && window.bossTotalSpawned===5){ window.bossWave=2; window.bossTotalSpawned=10; showHit('👹👹 FALA 2! 👹👹'); setTimeout(()=>{ if(gameRunning) spawnBossWave(5,10); }, 500); }
+      if(bossKills===10 && window.bossTotalSpawned===10){ window.bossWave=3; window.bossTotalSpawned=15; showHit('👹👹👹 FALA 3! 👹👹👹'); setTimeout(()=>{ if(gameRunning) spawnBossWave(10,15); }, 500); }
+      if(bossKills===15 && window.bossTotalSpawned===15){ window.bossWave=4; window.bossTotalSpawned=20; showHit('💀💀 FALA 4 - OSTATNIA! 💀💀'); setTimeout(()=>{ if(gameRunning) spawnBossWave(15,20); }, 500); }
+    }
+  }
+  if(gameMode==='boss' && bossKills>=20){ endGame(true); return; }
+  if(gameMode==='normal' && enemies.length<4) spawnEnemy();
+  for(let i=toasts.length-1;i>=0;i--){ if(Math.hypot(toasts[i].x-player.x,toasts[i].y-player.y)<40){ toasts.splice(i,1); superCharge=Math.min(100,superCharge+34); if(player.hasHyper) hyperCharge=Math.min(100,hyperCharge+17); updateSuperUI(); } }
+  if(gameMode==='normal' && toasts.length===0){ endGame(true); return; }
+  if(gameMode==='boss' && toasts.length===0){ for(let i=0;i<3;i++) spawnToast(); }
+  for(let i=coinsInGame.length-1;i>=0;i--){ if(Math.hypot(coinsInGame[i].x-player.x,coinsInGame[i].y-player.y)<36){ coinsInGame.splice(i,1); coinsCollected+=10; coins+=10; } }
+  ctx.fillStyle = gameMode==='boss' ? '#5a2a2a' : '#6bcb4a'; ctx.fillRect(0,0,W,H); ctx.font='24px Arial';
+  for(let i=0;i<puddles.length;i++){ let p=puddles[i]; ctx.fillStyle='rgba(255,235,59,0.6)'; ctx.beginPath(); ctx.ellipse(p.x,p.y,38,26,0,0,Math.PI*2); ctx.fill(); ctx.font='18px Arial'; ctx.fillText('🧴',p.x-9,p.y+6); ctx.font='24px Arial'; }
+  for(let i=0;i<toasts.length;i++) ctx.fillText('🍞',toasts[i].x-12,toasts[i].y+8);
+  for(let i=0;i<coinsInGame.length;i++) ctx.fillText('🪙',coinsInGame[i].x-11,coinsInGame[i].y+8);
+  for(let i=0;i<enemies.length;i++){ let e=enemies[i]; ctx.fillStyle='#607d8b'; ctx.beginPath(); ctx.arc(e.x,e.y,e.r,0,Math.PI*2); ctx.fill(); ctx.fillText('🤖',e.x-12,e.y+8); ctx.fillStyle='#333'; ctx.fillRect(e.x-20,e.y-38,40,5); ctx.fillStyle='red'; ctx.fillRect(e.x-20,e.y-38,40*e.hp/e.maxHp,5); }
+  for(let i=0;i<bosses.length;i++){ let b=bosses[i]; ctx.fillStyle = b.color; ctx.beginPath(); ctx.arc(b.x,b.y,b.r,0,Math.PI*2); ctx.fill(); ctx.font='36px Arial'; ctx.fillText(b.emoji,b.x-18,b.y+12); ctx.font='24px Arial'; ctx.fillStyle='#333'; ctx.fillRect(b.x-40,b.y-b.r-18,80,8); ctx.fillStyle='red'; ctx.fillRect(b.x-40,b.y-b.r-18,80*b.hp/b.maxHp,8); }
+  for(let i=0;i<bullets.length;i++) ctx.fillText(bullets[i].icon,bullets[i].x-12,bullets[i].y+8);
+  for(let i=0;i<enemyBullets.length;i++){ ctx.fillStyle='red'; ctx.beginPath(); ctx.arc(enemyBullets[i].x,enemyBullets[i].y,10,0,Math.PI*2); ctx.fill(); ctx.fillText('🔥',enemyBullets[i].x-12,enemyBullets[i].y+8); }
+  if(selectedChar==='sloneczko'){ ctx.fillStyle='rgba(255,235,59,0.35)'; ctx.beginPath(); ctx.arc(player.x,player.y,38,0,Math.PI*2); ctx.fill(); }
+  if(player.hp < player.maxHp && timeSinceDamage >= 6){ ctx.fillStyle='rgba(76,175,80,0.4)'; ctx.beginPath(); ctx.arc(player.x,player.y,36,0,Math.PI*2); ctx.fill(); }
+  if(selectedChar==='odkurzacz'){ ctx.fillStyle='rgba(255,0,255,0.3)'; ctx.beginPath(); ctx.arc(player.x,player.y,36,0,Math.PI*2); ctx.fill(); }
+  ctx.fillStyle=player.color; ctx.beginPath(); ctx.arc(player.x,player.y,player.r,0,Math.PI*2); ctx.fill(); ctx.fillText(player.emoji,player.x-12,player.y+8);
+  document.getElementById('hpFill').style.width=(player.hp/player.maxHp*100)+'%'; document.getElementById('hpText').innerText=Math.floor(player.hp);
+  let tc=document.getElementById('toastCount'); if(tc) tc.innerText= gameMode==='boss' ? 'BOSS' : (8-toasts.length);
+  document.getElementById('killCount').innerText=kills; document.getElementById('gameCoins').innerText=coinsCollected; document.getElementById('coins').innerText=coins;
+  raf=requestAnimationFrame(loop);
+}
+function shoot(){
+  if(!gameRunning) return; let now=Date.now(); if(now-lastAttack<450) return; lastAttack=now; let c=CHARACTERS[selectedChar];
+  let target=null, bestD=9999;
+  for(let i=0;i<enemies.length;i++){ let d=Math.hypot(enemies[i].x-player.x,enemies[i].y-player.y); if(d<bestD){ bestD=d; target=enemies[i]; } }
+  for(let i=0;i<bosses.length;i++){ let d=Math.hypot(bosses[i].x-player.x,bosses[i].y-player.y); if(d<bestD){ bestD=d; target=bosses[i]; } }
+  let dirX=lastDir.x, dirY=lastDir.y; if(target){ let d=Math.hypot(target.x-player.x,target.y-player.y)||1; dirX=(target.x-player.x)/d; dirY=(target.y-player.y)/d; }
+  if(selectedChar==='tinki'){ for(let i=0;i<enemies.length;i++) if(Math.hypot(enemies[i].x-player.x,enemies[i].y-player.y)<90) enemies[i].hp-=c.dmg; for(let i=0;i<bosses.length;i++) if(Math.hypot(bosses[i].x-player.x,bosses[i].y-player.y)<100) bosses[i].hp-=c.dmg; updateBossUI(); showHit('🥊 KLAPS!'); }
+  if(selectedChar==='dipsi') bullets.push({x:player.x,y:player.y,vx:dirX*9,vy:dirY*9,life:50,dmg:c.dmg,icon:'🎩',boomerang:true,hit:{}});
+  if(selectedChar==='lala') bullets.push({x:player.x,y:player.y,vx:dirX*8,vy:dirY*8,life:80,dmg:c.dmg,icon:'🏀',bounce:true,hit:{}});
+  if(selectedChar==='pou'){ player.x+=dirX*90; player.y+=dirY*90; for(let i=0;i<enemies.length;i++) if(Math.hypot(enemies[i].x-player.x,enemies[i].y-player.y)<80) enemies[i].hp-=c.dmg; for(let i=0;i<bosses.length;i++) if(Math.hypot(bosses[i].x-player.x,bosses[i].y-player.y)<100) bosses[i].hp-=c.dmg; updateBossUI(); showHit('🛴 DASH!'); }
+  if(selectedChar==='odkurzacz'){ bullets.push({x:player.x,y:player.y,vx:dirX*11,vy:dirY*11,life:45,dmg:c.dmg,icon:'🧴',puddle:true}); showHit('🧴 PLAMA KREMU!'); }
+  if(selectedChar==='sloneczko'){
+    bullets.push({x:player.x,y:player.y,vx:dirX*10,vy:dirY*10,life:60,dmg:c.dmg,icon:'☀️',sunburst:true,hit:{}});
+    let perpX=-dirY, perpY=dirX;
+    bullets.push({x:player.x,y:player.y,vx:dirX*10+perpX*2,vy:dirY*10+perpY*2,life:60,dmg:Math.floor(c.dmg*0.7),icon:'✨',sunburst:true,hit:{}});
+    bullets.push({x:player.x,y:player.y,vx:dirX*10-perpX*2,vy:dirY*10-perpY*2,life:60,dmg:Math.floor(c.dmg*0.7),icon:'✨',sunburst:true,hit:{}});
+    showHit('☀️ PROMIEŃ SŁOŃCA!');
+  }
+  superCharge=Math.min(100,superCharge+8); if(player.hasHyper) hyperCharge=Math.min(100,hyperCharge+4); updateSuperUI();
+}
+function doSuper(){
+  if(!gameRunning) return; if(superCharge<100){ showHit('Super: '+Math.floor(superCharge)+'% - zbierz tosty!'); return; } superCharge=0; updateSuperUI(); let c=CHARACTERS[selectedChar]; showHit('💥 SUPER '+c.name+'! 💥');
+  if(selectedChar==='tinki'){ for(let i=0;i<enemies.length;i++) enemies[i].hp-=3000; for(let i=0;i<bosses.length;i++) bosses[i].hp-=3000; player.hp=Math.min(player.maxHp,player.hp+2000); }
+  if(selectedChar==='dipsi'){ for(let i=0;i<enemies.length;i++) enemies[i].hp-=4000; for(let i=0;i<bosses.length;i++) bosses[i].hp-=4000; }
+  if(selectedChar==='lala'){ for(let i=0;i<6;i++){ let a=i/6*Math.PI*2; bullets.push({x:player.x,y:player.y,vx:Math.cos(a)*8,vy:Math.sin(a)*8,life:70,dmg:1200,icon:'🏀',bounce:true,hit:{}}); } }
+  if(selectedChar==='pou'){ player.speed*=1.5; setTimeout(()=> player.speed/=1.5, 5000); for(let i=0;i<enemies.length;i++) if(Math.hypot(enemies[i].x-player.x,enemies[i].y-player.y)<220) enemies[i].hp-=3000; for(let i=0;i<bosses.length;i++) if(Math.hypot(bosses[i].x-player.x,bosses[i].y-player.y)<240) bosses[i].hp-=3000; }
+  if(selectedChar==='odkurzacz'){ showHit('🌪️🧴 BURZA TUBBY KREMU! 🌪️'); for(let i=0;i<enemies.length;i++) enemies[i].hp-=6000; for(let i=0;i<bosses.length;i++) bosses[i].hp-=6000; for(let i=0;i<8;i++){ let a=i/8*Math.PI*2; puddles.push({x:player.x+Math.cos(a)*110,y:player.y+Math.sin(a)*110,life:6,dmg:350}); } }
+  if(selectedChar==='sloneczko'){
+    showHit('☀️☀️ EKSPLOZJA SŁONECZNA! ☀️☀️');
+    for(let i=0;i<enemies.length;i++) enemies[i].hp-=7000;
+    for(let i=0;i<bosses.length;i++) bosses[i].hp-=7000;
+    player.hp=Math.min(player.maxHp,player.hp+2500);
+    for(let i=0;i<10;i++){ let a=i/10*Math.PI*2; bullets.push({x:player.x,y:player.y,vx:Math.cos(a)*10,vy:Math.sin(a)*10,life:50,dmg:800,icon:'☀️',sunburst:true,hit:{}}); }
+  }
+  updateBossUI();
+}
+function doHyper(){
+  if(!gameRunning) return;
+  if(!player.hasHyper){ showHit('Kup Hiperkę! Wbij 10 lvl + 5000 monet!'); return; }
+  if(hyperCharge<100){ showHit('🔥 HIPER: '+Math.floor(hyperCharge)+'% - ładuje się 2x wolniej!'); return; }
+  hyperCharge=0; updateSuperUI();
+  let c=CHARACTERS[selectedChar];
+  showHit('🔥🔥🔥 HIPER '+c.name+'! 🔥🔥🔥');
+  if(selectedChar==='tinki'){ for(let i=0;i<enemies.length;i++) enemies[i].hp-=6000; for(let i=0;i<bosses.length;i++) bosses[i].hp-=6000; player.hp=Math.min(player.maxHp,player.hp+4000); }
+  if(selectedChar==='dipsi'){ for(let i=0;i<enemies.length;i++) enemies[i].hp-=8000; for(let i=0;i<bosses.length;i++) bosses[i].hp-=8000; }
+  if(selectedChar==='lala'){ for(let i=0;i<12;i++){ let a=i/12*Math.PI*2; bullets.push({x:player.x,y:player.y,vx:Math.cos(a)*9,vy:Math.sin(a)*9,life:90,dmg:2400,icon:'🏀',bounce:true,hit:{}}); } }
+  if(selectedChar==='pou'){ player.speed*=2.2; setTimeout(()=> player.speed/=2.2, 8000); for(let i=0;i<enemies.length;i++) if(Math.hypot(enemies[i].x-player.x,enemies[i].y-player.y)<300) enemies[i].hp-=6000; for(let i=0;i<bosses.length;i++) if(Math.hypot(bosses[i].x-player.x,bosses[i].y-player.y)<320) bosses[i].hp-=6000; }
+  if(selectedChar==='odkurzacz'){ for(let i=0;i<enemies.length;i++) enemies[i].hp-=12000; for(let i=0;i<bosses.length;i++) bosses[i].hp-=12000; for(let i=0;i<16;i++){ let a=i/16*Math.PI*2; puddles.push({x:player.x+Math.cos(a)*140,y:player.y+Math.sin(a)*140,life:8,dmg:700}); } }
+  if(selectedChar==='sloneczko'){
+    showHit('☀️☀️☀️ SUPERNOWA! 14 000 OBRAŻEŃ! ☀️☀️☀️');
+    for(let i=0;i<enemies.length;i++) enemies[i].hp-=14000;
+    for(let i=0;i<bosses.length;i++) bosses[i].hp-=14000;
+    player.hp=player.maxHp;
+    for(let i=0;i<20;i++){ let a=i/20*Math.PI*2; bullets.push({x:player.x,y:player.y,vx:Math.cos(a)*11,vy:Math.sin(a)*11,life:70,dmg:1500,icon:'☀️',sunburst:true,hit:{}}); }
+  }
+  updateBossUI();
+}
+document.getElementById('attackBtn').addEventListener('touchstart', function(e){ e.preventDefault(); shoot(); }, {passive:false});
+document.getElementById('attackBtn').addEventListener('click', function(e){ e.preventDefault(); shoot(); });
+document.getElementById('superBtn').addEventListener('touchstart', function(e){ e.preventDefault(); doSuper(); }, {passive:false});
+document.getElementById('superBtn').addEventListener('click', function(e){ e.preventDefault(); doSuper(); });
+document.getElementById('hyperGameBtn').addEventListener('touchstart', function(e){ e.preventDefault(); doHyper(); }, {passive:false});
+document.getElementById('hyperGameBtn').addEventListener('click', function(e){ e.preventDefault(); doHyper(); });
+window.addEventListener('keydown', function(e){ keys[e.key.toLowerCase()]=true; if(e.key===' '){ e.preventDefault(); shoot(); } if(e.key==='k'||e.key==='K'){ doSuper(); } if(e.key==='l'||e.key==='L'){ doHyper(); } });
+window.addEventListener('keyup', function(e){ keys[e.key.toLowerCase()]=false; });
+let joy=document.getElementById('joy'), stick=document.getElementById('stick'), joyActive=false;
+function handleJoy(e){ let r=joy.getBoundingClientRect(); let t=e.touches?e.touches[0]:e; let dx=t.clientX-(r.left+50), dy=t.clientY-(r.top+50); let d=Math.hypot(dx,dy); if(d>35){ dx=dx/d*35; dy=dy/d*35; } stick.style.transform='translate('+dx+'px,'+dy+'px)'; moveX=dx/35; moveY=dy/35; }
+joy.addEventListener('touchstart', function(e){ joyActive=true; handleJoy(e); }, {passive:false});
+joy.addEventListener('touchmove', function(e){ if(joyActive){ e.preventDefault(); handleJoy(e); } }, {passive:false});
+joy.addEventListener('touchend', function(){ stick.style.transform='translate(0,0)'; moveX=0; moveY=0; joyActive=false; });
+</script>
+</body>
+</html>
+</body></html>
