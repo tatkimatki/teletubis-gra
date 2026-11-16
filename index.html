@@ -324,5 +324,6 @@ function joyEnd(){joyOn=false;var stk=el('stk');if(stk)stk.style.transform='tran
 window.addEventListener('keydown',function(e){var k=e.key.toLowerCase();keys[k]=true;if(e.key===' '){e.preventDefault();shoot()}if(k==='f')doSup();if(k==='1')sendChat('😡');if(k==='2')sendChat('😝');if(k==='3')sendChat('💩');if(k==='4')sendChat('❤️‍🔥');if(k==='5')sendChat('💎');if(k==='6')sendChat('😂');if(k==='7')sendChat('😭')});
 window.addEventListener('keyup',function(e){keys[e.key.toLowerCase()]=false});
 save();renderHero();renderPostacieGrid();resetBox();renderRanks();
+if(location.protocol==='https:'&&'serviceWorker' in navigator){var serviceWorkerReloading=false;navigator.serviceWorker.addEventListener('controllerchange',function(){if(serviceWorkerReloading)return;serviceWorkerReloading=true;window.location.reload()});navigator.serviceWorker.register('./service-worker.js',{updateViaCache:'none'}).then(function(reg){return reg.update()}).catch(function(){})}
 </script>
 </body></html>
